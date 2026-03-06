@@ -22,20 +22,20 @@ function makeNebulaTexture(color) {
   );
 
   gradient.addColorStop(0, color);
-  gradient.addColorStop(0.25, color + "cc");
-  gradient.addColorStop(0.55, color + "55");
+  gradient.addColorStop(0.2, color + "cc");
+  gradient.addColorStop(0.5, color + "55");
   gradient.addColorStop(1, color + "00");
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 28; i++) {
     ctx.beginPath();
     ctx.fillStyle = color;
-    ctx.globalAlpha = 0.04 + Math.random() * 0.04;
+    ctx.globalAlpha = 0.035 + Math.random() * 0.045;
     const x = Math.random() * size;
     const y = Math.random() * size;
-    const r = 40 + Math.random() * 90;
+    const r = 30 + Math.random() * 100;
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
   }
@@ -47,7 +47,13 @@ function makeNebulaTexture(color) {
   return texture;
 }
 
-function NebulaCloud({ position, color, size, opacity, rotation = [0, 0, 0] }) {
+function NebulaCloud({
+  position,
+  color,
+  size,
+  opacity,
+  rotation = [0, 0, 0],
+}) {
   const texture = useMemo(() => makeNebulaTexture(color), [color]);
 
   return (
@@ -64,37 +70,94 @@ function NebulaCloud({ position, color, size, opacity, rotation = [0, 0, 0] }) {
   );
 }
 
+function StarFieldBand() {
+  return (
+    <>
+      <NebulaCloud
+        position={[-10, 8, -42]}
+        color="#4f46e5"
+        size={[34, 10]}
+        opacity={0.18}
+        rotation={[0, 0, -0.18]}
+      />
+      <NebulaCloud
+        position={[2, 7, -43]}
+        color="#7c3aed"
+        size={[38, 12]}
+        opacity={0.16}
+        rotation={[0, 0, -0.12]}
+      />
+      <NebulaCloud
+        position={[16, 6, -44]}
+        color="#ec4899"
+        size={[28, 10]}
+        opacity={0.11}
+        rotation={[0, 0, -0.08]}
+      />
+      <NebulaCloud
+        position={[0, 7, -45]}
+        color="#ffffff"
+        size={[30, 6]}
+        opacity={0.05}
+        rotation={[0, 0, -0.1]}
+      />
+    </>
+  );
+}
+
 function Star() {
   const starRef = useRef();
 
   useFrame((state) => {
     if (!starRef.current) return;
-    const pulse = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.05;
+    const pulse = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.04;
     starRef.current.scale.set(pulse, pulse, pulse);
   });
 
   return (
-    <mesh ref={starRef}>
-      <sphereGeometry args={[1.25, 64, 64]} />
-      <meshStandardMaterial
-        color="#fff6b0"
-        emissive="#ffd54f"
-        emissiveIntensity={6}
-        roughness={0.4}
-        metalness={0.2}
-      />
-    </mesh>
+    <group>
+      <mesh ref={starRef}>
+        <sphereGeometry args={[0.95, 64, 64]} />
+        <meshStandardMaterial
+          color="#fff6c7"
+          emissive="#ffd54f"
+          emissiveIntensity={5}
+          roughness={0.38}
+          metalness={0.12}
+        />
+      </mesh>
+
+      <mesh scale={1.9}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial
+          color="#fde68a"
+          transparent
+          opacity={0.08}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
+      <mesh scale={2.5}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial
+          color="#fff7cc"
+          transparent
+          opacity={0.03}
+          side={THREE.BackSide}
+        />
+      </mesh>
+    </group>
   );
 }
 
 function OrbitRing({ radius }) {
   return (
     <mesh rotation={[Math.PI / 2, 0, 0]}>
-      <ringGeometry args={[radius - 0.015, radius + 0.015, 128]} />
+      <ringGeometry args={[radius - 0.012, radius + 0.012, 128]} />
       <meshBasicMaterial
-        color="#1e6fa5"
+        color="#f1f8f8"
         transparent
-        opacity={0.18}
+        opacity={0.1}
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -102,32 +165,34 @@ function OrbitRing({ radius }) {
 }
 
 function GalaxySpiral() {
-  const spiralPoints = useMemo(() => {
+  const spiralGeometry = useMemo(() => {
     const positions = [];
     const colors = [];
     const colorA = new THREE.Color("#60a5fa");
-    const colorB = new THREE.Color("#a78bfa");
+    const colorB = new THREE.Color("#8b5cf6");
     const colorC = new THREE.Color("#f472b6");
+    const colorD = new THREE.Color("#ffffff");
 
-    const arms = 4;
-    const pointsPerArm = 350;
+    const arms = 5;
+    const pointsPerArm = 420;
 
     for (let arm = 0; arm < arms; arm++) {
       for (let i = 0; i < pointsPerArm; i++) {
         const t = i / pointsPerArm;
-        const angle = t * Math.PI * 6 + (arm / arms) * Math.PI * 2;
-        const radius = 4 + t * 28;
+        const angle = t * Math.PI * 7 + (arm / arms) * Math.PI * 2;
+        const radius = 3 + t * 30;
 
-        const x = Math.cos(angle) * radius + (Math.random() - 0.5) * 1.2;
-        const y = (Math.random() - 0.5) * 1.5;
-        const z = Math.sin(angle) * radius + (Math.random() - 0.5) * 1.2;
+        const x = Math.cos(angle) * radius + (Math.random() - 0.5) * 1.4;
+        const y = (Math.random() - 0.5) * 1.2;
+        const z = Math.sin(angle) * radius + (Math.random() - 0.5) * 1.4;
 
         positions.push(x, y, z);
 
         const mixed = new THREE.Color()
           .copy(colorA)
-          .lerp(colorB, Math.random() * 0.6)
-          .lerp(colorC, Math.random() * 0.35);
+          .lerp(colorB, Math.random() * 0.7)
+          .lerp(colorC, Math.random() * 0.4)
+          .lerp(colorD, Math.random() * 0.08);
 
         colors.push(mixed.r, mixed.g, mixed.b);
       }
@@ -147,13 +212,13 @@ function GalaxySpiral() {
   }, []);
 
   return (
-    <points position={[0, -6, -42]} rotation={[Math.PI / 2.8, 0, 0]}>
-      <primitive object={spiralPoints} attach="geometry" />
+    <points position={[0, -4, -55]} rotation={[Math.PI / 2.7, 0.15, 0]}>
+      <primitive object={spiralGeometry} attach="geometry" />
       <pointsMaterial
-        size={0.18}
+        size={0.16}
         vertexColors
         transparent
-        opacity={0.5}
+        opacity={0.42}
         depthWrite={false}
       />
     </points>
@@ -167,33 +232,31 @@ function Comet() {
   useFrame((state) => {
     if (!cometRef.current || !trailRef.current) return;
 
-    const t = state.clock.elapsedTime * 0.18;
-    const cycle = (t % 1) * 2 - 1; // from -1 to 1
-    const x = cycle * 36;
-    const y = 8 + Math.sin(t * Math.PI * 2) * 3;
-    const z = -8 + Math.cos(t * Math.PI * 2) * 2;
+    const t = state.clock.elapsedTime * 0.08;
+    const cycle = (t % 1) * 2 - 1;
+    const x = cycle * 38;
+    const y = 8 + Math.sin(t * Math.PI * 2) * 2.5;
+    const z = -10 + Math.cos(t * Math.PI * 2) * 2;
 
     cometRef.current.position.set(x, y, z);
-    trailRef.current.position.set(x - 2.8, y, z);
-
-    cometRef.current.visible = true;
-    trailRef.current.visible = true;
+    trailRef.current.position.set(x - 3.2, y, z);
   });
 
   return (
     <>
       <mesh ref={cometRef}>
-        <sphereGeometry args={[0.18, 24, 24]} />
+        <sphereGeometry args={[0.16, 24, 24]} />
         <meshBasicMaterial color="#e0f2fe" transparent opacity={0.95} />
       </mesh>
 
-      <mesh ref={trailRef} rotation={[0, 0, -0.2]}>
-        <planeGeometry args={[5.2, 0.35]} />
+      <mesh ref={trailRef} rotation={[0, 0, -0.15]}>
+        <planeGeometry args={[5.6, 0.32]} />
         <meshBasicMaterial
-          color="#7dd3fc"
+          color="#93c5fd"
           transparent
-          opacity={0.22}
+          opacity={0.18}
           depthWrite={false}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
     </>
@@ -362,7 +425,6 @@ function Planet({
   const groupRef = useRef();
   const planetRef = useRef();
   const ringRef = useRef();
-
   const [hovered, setHovered] = useState(false);
 
   const texture = useMemo(() => {
@@ -381,34 +443,35 @@ function Planet({
 
     groupRef.current.position.x = Math.cos(t) * radius;
     groupRef.current.position.z = Math.sin(t) * radius;
+    groupRef.current.position.y = Math.sin(t * 0.7 + radius) * 0.12;
 
     planetRef.current.rotation.y += 0.003;
 
     const targetScale = hovered ? 1.12 : 1;
     planetRef.current.scale.lerp(
-    new THREE.Vector3(targetScale, targetScale, targetScale),
-    0.08
+      new THREE.Vector3(targetScale, targetScale, targetScale),
+      0.08
     );
 
     if (ringRef.current) {
-    const ringScale = hovered ? 1.08 : 1;
-    ringRef.current.scale.lerp(
+      const ringScale = hovered ? 1.08 : 1;
+      ringRef.current.scale.lerp(
         new THREE.Vector3(ringScale, ringScale, ringScale),
         0.08
-    );
+      );
     }
   });
 
-    const handlePointerOver = (e) => {
-        e.stopPropagation();
-        setHovered(true);
-        document.body.style.cursor = "pointer";
-    };
+  const handlePointerOver = (e) => {
+    e.stopPropagation();
+    setHovered(true);
+    document.body.style.cursor = "pointer";
+  };
 
-    const handlePointerOut = () => {
-        setHovered(false);
-        document.body.style.cursor = "default";
-    };
+  const handlePointerOut = () => {
+    setHovered(false);
+    document.body.style.cursor = "default";
+  };
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -430,7 +493,7 @@ function Planet({
         <meshStandardMaterial
           map={texture || null}
           emissive={colors.base}
-          emissiveIntensity={0.35}
+          emissiveIntensity={0.28}
           roughness={planetType === "gas" ? 0.9 : 0.65}
           metalness={planetType === "lava" ? 0.18 : 0.06}
         />
@@ -455,17 +518,20 @@ function Planet({
             opacity={0.45}
             side={THREE.DoubleSide}
           />
-        </mesh>)}
+        </mesh>
+      )}
+
       {hovered && (
         <mesh scale={size * 2}>
-            <sphereGeometry args={[1, 32, 32]} />
-            <meshBasicMaterial
+          <sphereGeometry args={[1, 32, 32]} />
+          <meshBasicMaterial
             color={colors.accent}
             transparent
             opacity={0.12}
             side={THREE.BackSide}
-            />
-        </mesh>)}
+          />
+        </mesh>
+      )}
 
       <Html
         transform
@@ -484,13 +550,16 @@ function Planet({
           <p className="truncate text-sm font-semibold text-white">
             {repo?.name || "Unknown Repo"}
           </p>
+
           <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-slate-300">
             <span>⭐ {repo?.stargazers_count ?? 0}</span>
             <span>🍴 {repo?.forks_count ?? 0}</span>
           </div>
+
           <p className="mt-1 text-[11px] text-cyan-300">
             {repo?.language || "Unknown"}
           </p>
+
           <p className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">
             {planetType} planet
           </p>
@@ -545,78 +614,81 @@ function getPlanetPalette(language) {
 
 export default function GalaxyScene({ repos = [] }) {
   return (
-    <div className="h-[560px] w-full rounded-2xl border border-gray-800 bg-black">
+    <div className="h-[560px] w-full rounded-2xl border border-gray-800 bg-[radial-gradient(circle_at_top,_#0f172a_0%,_#020617_40%,_#000000_100%)]">
       <Canvas camera={{ position: [0, 11, 24], fov: 46 }}>
-        <fog attach="fog" args={["#020617", 18, 52]} />
-        <ambientLight intensity={0.45} />
+        <fog attach="fog" args={["#020617", 18, 58]} />
+        <ambientLight intensity={0.5} />
         <pointLight position={[0, 0, 0]} intensity={40} color="#fde047" />
 
         <GalaxySpiral />
+        <StarFieldBand />
 
         <NebulaCloud
-            position={[-16, 7, -28]}
-            color="#7c3aed"
-            size={[18, 12]}
-            opacity={0.82}
-            rotation={[0, 0, -0.35]}
+          position={[-16, 7, -28]}
+          color="#7c3aed"
+          size={[18, 12]}
+          opacity={0.18}
+          rotation={[0, 0, -0.35]}
+        />
+        <NebulaCloud
+          position={[14, -3, -24]}
+          color="#2563eb"
+          size={[16, 10]}
+          opacity={0.14}
+          rotation={[0, 0, 0.28]}
+        />
+        <NebulaCloud
+          position={[0, 10, -30]}
+          color="#a855f7"
+          size={[22, 12]}
+          opacity={0.12}
+          rotation={[0, 0, 0.12]}
         />
 
-        <NebulaCloud
-            position={[14, -3, -24]}
-            color="#2563eb"
-            size={[16, 10]}
-            opacity={0.75}
-            rotation={[0, 0, 0.28]}
-        />
-
-        <NebulaCloud
-            position={[0, 10, -30]}
-            color="#a855f7"
-            size={[22, 12]}
-            opacity={0.64}
-            rotation={[0, 0, 0.12]}
-        />
-        <Stars radius={90} depth={45} count={5000} factor={4} fade />
+        <Stars radius={110} depth={60} count={7000} factor={4} fade />
+        <Stars radius={60} depth={25} count={2500} factor={2} fade />
 
         <Star />
 
-        {repos.slice(0, 12).map((repo, i) => {
-          const radius = 4.5 + i * 2.1;
-          const size = Math.max(
-            0.34,
-            Math.min(0.95, repo.stargazers_count / 4 + 0.38)
-          );
-          const speed = Math.max(0.06, 0.22 - i * 0.012);
-          const colors = getPlanetPalette(repo.language);
-          const hasRing = i % 4 === 0 || repo.forks_count > 0;
-          const tilt = (i % 5) * 0.2;
-          const planetType = getPlanetType(repo, repo.language);
+        <group rotation={[-0.35, 0.2, 0]}>
+          {repos.slice(0, 12).map((repo, i) => {
+            const radius = 4.5 + i * 2.1;
+            const size = Math.max(
+              0.34,
+              Math.min(0.95, repo.stargazers_count / 4 + 0.38)
+            );
+            const speed = Math.max(0.06, 0.22 - i * 0.012);
+            const colors = getPlanetPalette(repo.language);
+            const hasRing = i % 4 === 0 || repo.forks_count > 0;
+            const tilt = (i % 5) * 0.2;
+            const planetType = getPlanetType(repo, repo.language);
 
-          return (
-            <group key={repo.id}>
-              <OrbitRing radius={radius} />
-              <Planet
-                radius={radius}
-                speed={speed}
-                size={size}
-                colors={colors}
-                hasRing={hasRing}
-                tilt={tilt}
-                repo={repo}
-                planetType={planetType}
-              />
-            </group>
-          );
-        })}
+            return (
+              <group key={repo.id}>
+                <OrbitRing radius={radius} />
+                <Planet
+                  radius={radius}
+                  speed={speed}
+                  size={size}
+                  colors={colors}
+                  hasRing={hasRing}
+                  tilt={tilt}
+                  repo={repo}
+                  planetType={planetType}
+                />
+              </group>
+            );
+          })}
+        </group>
 
         <Comet />
 
         <OrbitControls
-            enablePan={false}
-            minDistance={12}
-            maxDistance={35}
-            enableDamping
-            dampingFactor={0.05}
+          enablePan={false}
+          minDistance={12}
+          maxDistance={35}
+          enableDamping
+          dampingFactor={0.05}
         />
       </Canvas>
     </div>
