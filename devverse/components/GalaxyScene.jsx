@@ -362,10 +362,21 @@ function Planet({
             opacity={0.45}
             side={THREE.DoubleSide}
           />
-        </mesh>
-      )}
+        </mesh>)}
+      {hovered && (
+        <mesh scale={size * 2}>
+            <sphereGeometry args={[1, 32, 32]} />
+            <meshBasicMaterial
+            color={colors.accent}
+            transparent
+            opacity={0.12}
+            side={THREE.BackSide}
+            />
+        </mesh>)}
 
       <Html
+        transform
+        occlude
         position={[0, size + 0.7, 0]}
         center
         distanceFactor={10}
@@ -376,7 +387,7 @@ function Planet({
           transition: "opacity 0.2s ease, transform 0.2s ease",
         }}
       >
-        <div className="min-w-[140px] rounded-xl border border-cyan-400/20 bg-slate-950/90 px-3 py-2 text-center shadow-lg backdrop-blur-md">
+        <div className="min-w-[150px] rounded-xl border border-cyan-400/20 bg-slate-950/80 px-4 py-3 text-center shadow-[0_0_25px_rgba(56,189,248,0.25)] backdrop-blur-md">
           <p className="truncate text-sm font-semibold text-white">
             {repo?.name || "Unknown Repo"}
           </p>
