@@ -20,7 +20,7 @@ export default async function GalaxyPage({ params }) {
         </p>
 
         <div className="mb-10 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950 p-4">
-          <GalaxyScene />
+          <GalaxyScene repos={repos}/>
         </div>
 
         <div className="mb-8 grid gap-4 md:grid-cols-4">
