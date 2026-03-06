@@ -11,8 +11,8 @@ export default function Home() {
     e.preventDefault();
 
     if (!username.trim()) return;
-
-    router.push(`/galaxy/${username}`);
+    
+    router.push(`/galaxy/${username.trim()}`);
   };
 
   return (
