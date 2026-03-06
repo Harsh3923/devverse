@@ -1,9 +1,10 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { OrbitControls, Stars, Html } from "@react-three/drei";
+import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+
 function makeNebulaTexture(color) {
   const size = 512;
   const canvas = document.createElement("canvas");
@@ -62,6 +63,7 @@ function NebulaCloud({ position, color, size, opacity, rotation = [0, 0, 0] }) {
     </mesh>
   );
 }
+
 function Star() {
   const starRef = useRef();
 
@@ -98,8 +100,6 @@ function OrbitRing({ radius }) {
     </mesh>
   );
 }
-
-
 
 function GalaxySpiral() {
   const spiralPoints = useMemo(() => {
@@ -222,11 +222,11 @@ function makePlanetTexture(base, accent, detail) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
 
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < 200; i=i+7) {
     ctx.beginPath();
     ctx.strokeStyle = i % 2 === 0 ? accent : detail;
-    ctx.globalAlpha = 0.15 + Math.random() * 0.12;
-    ctx.lineWidth = 4 + Math.random() * 10;
+    ctx.globalAlpha = 0.15 + Math.random() * 0.42;
+    ctx.lineWidth = 4 + Math.random() * 18;
     const y = Math.random() * size;
     ctx.moveTo(0, y);
     ctx.bezierCurveTo(
@@ -269,9 +269,13 @@ function Planet({
   colors,
   hasRing = false,
   tilt = 0,
+  repo,
 }) {
   const groupRef = useRef();
   const planetRef = useRef();
+  const ringRef = useRef();
+
+  const [hovered, setHovered] = useState(false);
 
   const texture = useMemo(() => {
     if (!colors) return null;
@@ -284,12 +288,51 @@ function Planet({
 
     groupRef.current.position.x = Math.cos(t) * radius;
     groupRef.current.position.z = Math.sin(t) * radius;
+
     planetRef.current.rotation.y += 0.003;
+
+    const targetScale = hovered ? 1.12 : 1;
+    planetRef.current.scale.lerp(
+    new THREE.Vector3(targetScale, targetScale, targetScale),
+    0.08
+    );
+
+    if (ringRef.current) {
+    const ringScale = hovered ? 1.08 : 1;
+    ringRef.current.scale.lerp(
+        new THREE.Vector3(ringScale, ringScale, ringScale),
+        0.08
+    );
+    }
   });
+
+    const handlePointerOver = (e) => {
+        e.stopPropagation();
+        setHovered(true);
+        document.body.style.cursor = "pointer";
+    };
+
+    const handlePointerOut = () => {
+        setHovered(false);
+        document.body.style.cursor = "default";
+    };
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (repo?.html_url) {
+      window.open(repo.html_url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
     <group ref={groupRef}>
-      <mesh ref={planetRef} rotation={[0.2, 0, tilt]}>
+      <mesh
+        ref={planetRef}
+        rotation={[0.2, 0, tilt]}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onClick={handleClick}
+      >
         <sphereGeometry args={[size, 64, 64]} />
         <meshStandardMaterial
           map={texture || null}
@@ -311,7 +354,7 @@ function Planet({
       </mesh>
 
       {hasRing && (
-        <mesh rotation={[Math.PI / 2.4, 0, tilt]}>
+        <mesh ref={ringRef} rotation={[Math.PI / 2.4, 0, tilt]}>
           <ringGeometry args={[size * 1.45, size * 2.15, 96]} />
           <meshBasicMaterial
             color={colors.accent}
@@ -321,6 +364,31 @@ function Planet({
           />
         </mesh>
       )}
+
+      <Html
+        position={[0, size + 0.7, 0]}
+        center
+        distanceFactor={10}
+        style={{
+          pointerEvents: "none",
+          opacity: hovered ? 1 : 0,
+          transform: `scale(${hovered ? 1 : 0.96})`,
+          transition: "opacity 0.2s ease, transform 0.2s ease",
+        }}
+      >
+        <div className="min-w-[140px] rounded-xl border border-cyan-400/20 bg-slate-950/90 px-3 py-2 text-center shadow-lg backdrop-blur-md">
+          <p className="truncate text-sm font-semibold text-white">
+            {repo?.name || "Unknown Repo"}
+          </p>
+          <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-slate-300">
+            <span>⭐ {repo?.stargazers_count ?? 0}</span>
+            <span>🍴 {repo?.forks_count ?? 0}</span>
+          </div>
+          <p className="mt-1 text-[11px] text-cyan-300">
+            {repo?.language || "Unknown"}
+          </p>
+        </div>
+      </Html>
     </group>
   );
 }
@@ -426,6 +494,7 @@ export default function GalaxyScene({ repos = [] }) {
                 colors={colors}
                 hasRing={hasRing}
                 tilt={tilt}
+                repo={repo}
               />
             </group>
           );
@@ -433,7 +502,13 @@ export default function GalaxyScene({ repos = [] }) {
 
         <Comet />
 
-        <OrbitControls enablePan={false} />
+        <OrbitControls
+            enablePan={false}
+            minDistance={12}
+            maxDistance={35}
+            enableDamping
+            dampingFactor={0.05}
+        />
       </Canvas>
     </div>
   );
