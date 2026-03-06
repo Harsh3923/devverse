@@ -200,7 +200,7 @@ function Comet() {
   );
 }
 
-function makePlanetTexture(base, accent, detail) {
+function makePlanetTexture(base, accent, detail, type = "rocky") {
   const size = 512;
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -213,7 +213,7 @@ function makePlanetTexture(base, accent, detail) {
     size * 0.08,
     size * 0.5,
     size * 0.5,
-    size * 0.6
+    size * 0.65
   );
   gradient.addColorStop(0, accent);
   gradient.addColorStop(0.45, base);
@@ -222,37 +222,115 @@ function makePlanetTexture(base, accent, detail) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
 
-  for (let i = 0; i < 200; i=i+7) {
-    ctx.beginPath();
-    ctx.strokeStyle = i % 2 === 0 ? accent : detail;
-    ctx.globalAlpha = 0.15 + Math.random() * 0.42;
-    ctx.lineWidth = 4 + Math.random() * 18;
-    const y = Math.random() * size;
-    ctx.moveTo(0, y);
-    ctx.bezierCurveTo(
-      size * 0.25,
-      y + (Math.random() * 40 - 20),
-      size * 0.75,
-      y + (Math.random() * 40 - 20),
-      size,
-      y + (Math.random() * 20 - 10)
-    );
-    ctx.stroke();
+  if (type === "gas") {
+    for (let i = 0; i < 34; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = i % 2 === 0 ? accent : detail;
+      ctx.globalAlpha = 0.16 + Math.random() * 0.18;
+      ctx.lineWidth = 5 + Math.random() * 12;
+      const y = Math.random() * size;
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(
+        size * 0.25,
+        y + (Math.random() * 30 - 15),
+        size * 0.75,
+        y + (Math.random() * 30 - 15),
+        size,
+        y + (Math.random() * 15 - 8)
+      );
+      ctx.stroke();
+    }
   }
 
-  for (let i = 0; i < 80; i++) {
-    ctx.beginPath();
-    ctx.globalAlpha = 0.06;
-    ctx.fillStyle = accent;
-    const r = 3 + Math.random() * 10;
-    ctx.arc(
-      Math.random() * size,
-      Math.random() * size,
-      r,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
+  if (type === "lava") {
+    for (let i = 0; i < 18; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.22 + Math.random() * 0.18;
+      ctx.lineWidth = 2 + Math.random() * 5;
+      ctx.moveTo(Math.random() * size, Math.random() * size);
+      for (let j = 0; j < 4; j++) {
+        ctx.lineTo(Math.random() * size, Math.random() * size);
+      }
+      ctx.stroke();
+    }
+
+    for (let i = 0; i < 60; i++) {
+      ctx.beginPath();
+      ctx.fillStyle = accent;
+      ctx.globalAlpha = 0.08 + Math.random() * 0.08;
+      const r = 4 + Math.random() * 18;
+      ctx.arc(
+        Math.random() * size,
+        Math.random() * size,
+        r,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }
+
+  if (type === "ice") {
+    for (let i = 0; i < 80; i++) {
+      ctx.beginPath();
+      ctx.fillStyle = i % 2 === 0 ? accent : "#ffffff";
+      ctx.globalAlpha = 0.05 + Math.random() * 0.08;
+      const r = 6 + Math.random() * 28;
+      ctx.arc(
+        Math.random() * size,
+        Math.random() * size,
+        r,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    for (let i = 0; i < 14; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#ffffff";
+      ctx.globalAlpha = 0.07;
+      ctx.lineWidth = 2 + Math.random() * 4;
+      ctx.moveTo(Math.random() * size, Math.random() * size);
+      ctx.lineTo(Math.random() * size, Math.random() * size);
+      ctx.stroke();
+    }
+  }
+
+  if (type === "rocky") {
+    for (let i = 0; i < 110; i++) {
+      ctx.beginPath();
+      ctx.fillStyle = i % 2 === 0 ? accent : detail;
+      ctx.globalAlpha = 0.06 + Math.random() * 0.08;
+      const r = 3 + Math.random() * 14;
+      ctx.arc(
+        Math.random() * size,
+        Math.random() * size,
+        r,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    for (let i = 0; i < 16; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = detail;
+      ctx.globalAlpha = 0.08;
+      ctx.lineWidth = 2 + Math.random() * 5;
+      const y = Math.random() * size;
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(
+        size * 0.3,
+        y + (Math.random() * 40 - 20),
+        size * 0.7,
+        y + (Math.random() * 40 - 20),
+        size,
+        y
+      );
+      ctx.stroke();
+    }
   }
 
   ctx.globalAlpha = 1;
@@ -260,6 +338,15 @@ function makePlanetTexture(base, accent, detail) {
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   return texture;
+}
+
+function getPlanetType(repo, language) {
+  if (repo?.stargazers_count >= 1) return "gas";
+  if (language === "Java") return "lava";
+  if (language === "Python") return "ice";
+  if (language === "CSS" || language === "HTML") return "gas";
+  if (language === "TypeScript") return "ice";
+  return "rocky";
 }
 
 function Planet({
@@ -270,6 +357,7 @@ function Planet({
   hasRing = false,
   tilt = 0,
   repo,
+  planetType = "rocky",
 }) {
   const groupRef = useRef();
   const planetRef = useRef();
@@ -279,8 +367,13 @@ function Planet({
 
   const texture = useMemo(() => {
     if (!colors) return null;
-    return makePlanetTexture(colors.base, colors.accent, colors.detail);
-  }, [colors]);
+    return makePlanetTexture(
+      colors.base,
+      colors.accent,
+      colors.detail,
+      planetType
+    );
+  }, [colors, planetType]);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime * speed;
@@ -338,8 +431,8 @@ function Planet({
           map={texture || null}
           emissive={colors.base}
           emissiveIntensity={0.35}
-          roughness={0.75}
-          metalness={0.08}
+          roughness={planetType === "gas" ? 0.9 : 0.65}
+          metalness={planetType === "lava" ? 0.18 : 0.06}
         />
       </mesh>
 
@@ -397,6 +490,9 @@ function Planet({
           </div>
           <p className="mt-1 text-[11px] text-cyan-300">
             {repo?.language || "Unknown"}
+          </p>
+          <p className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">
+            {planetType} planet
           </p>
         </div>
       </Html>
@@ -494,6 +590,7 @@ export default function GalaxyScene({ repos = [] }) {
           const colors = getPlanetPalette(repo.language);
           const hasRing = i % 4 === 0 || repo.forks_count > 0;
           const tilt = (i % 5) * 0.2;
+          const planetType = getPlanetType(repo, repo.language);
 
           return (
             <group key={repo.id}>
@@ -506,6 +603,7 @@ export default function GalaxyScene({ repos = [] }) {
                 hasRing={hasRing}
                 tilt={tilt}
                 repo={repo}
+                planetType={planetType}
               />
             </group>
           );
