@@ -1,65 +1,114 @@
-import Image from "next/image";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import SoloExplorer from "./SoloExplorer";
 
-export default function Home() {
+async function getRecentGalaxies() {
+  try {
+    const { data } = await supabase
+      .from("galaxies")
+      .select("id, name, slug, created_at")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (!data) return [];
+
+    // Get contributor counts
+    const ids = data.map((g) => g.id);
+    const { data: contribs } = await supabase
+      .from("galaxy_contributors")
+      .select("galaxy_id")
+      .in("galaxy_id", ids);
+
+    const counts = {};
+    (contribs || []).forEach((r) => { counts[r.galaxy_id] = (counts[r.galaxy_id] || 0) + 1; });
+
+    return data.map((g) => ({ ...g, contributors: counts[g.id] || 0 }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const recentGalaxies = await getRecentGalaxies();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-black text-white">
+      {/* Hero */}
+      <div className="flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center">
+        <h1 className="text-6xl font-bold mb-4">
+          Code Galaxy 🌌
+        </h1>
+        <p className="text-gray-400 max-w-xl text-lg">
+          Visualize GitHub developers as solar systems — explore solo or build shared galaxies with others.
+        </p>
+      </div>
+
+      {/* Two-card layout */}
+      <div className="mx-auto max-w-5xl px-6 pb-16 grid gap-6 md:grid-cols-2">
+
+        {/* Card 1: Solo Explorer */}
+        <div className="rounded-2xl border border-gray-800 bg-gray-950 p-8 flex flex-col">
+          <div className="mb-6">
+            <span className="text-4xl">🔭</span>
+            <h2 className="mt-3 text-2xl font-bold">Solo Explorer</h2>
+            <p className="mt-2 text-sm text-gray-400">
+              Enter any GitHub username to visualize their repositories as a private solar system.
+            </p>
+          </div>
+          <div className="mt-auto">
+            <SoloExplorer />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Card 2: Shared Galaxies */}
+        <div className="rounded-2xl border border-gray-800 bg-gray-950 p-8 flex flex-col">
+          <div className="mb-6">
+            <span className="text-4xl">🌌</span>
+            <h2 className="mt-3 text-2xl font-bold">Shared Galaxies</h2>
+            <p className="mt-2 text-sm text-gray-400">
+              Create a named galaxy, invite developers to add their solar systems, and explore together in real-time.
+            </p>
+          </div>
+          <div className="mt-auto flex flex-col gap-3">
+            <Link
+              href="/galaxies"
+              className="w-full text-center rounded-xl bg-gray-800 border border-gray-700 px-6 py-3 font-semibold hover:bg-gray-700 transition-colors"
+            >
+              Browse Galaxies
+            </Link>
+            <Link
+              href="/galaxies/new"
+              className="w-full text-center rounded-xl bg-blue-600 px-6 py-3 font-semibold hover:bg-blue-500 transition-colors"
+            >
+              + Create a Galaxy
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      {/* Recent Galaxies Strip */}
+      {recentGalaxies.length > 0 && (
+        <div className="mx-auto max-w-5xl px-6 pb-20">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest">Recent Galaxies</h3>
+            <Link href="/galaxies" className="text-sm text-blue-500 hover:text-blue-400 transition-colors">
+              View all →
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {recentGalaxies.map((g) => (
+              <Link
+                key={g.id}
+                href={`/galaxies/${g.slug}`}
+                className="rounded-xl border border-gray-800 bg-gray-950 p-4 hover:border-gray-700 hover:bg-gray-900 transition-all"
+              >
+                <p className="font-semibold truncate">{g.name}</p>
+                <p className="mt-1 text-xs text-gray-500">🪐 {g.contributors} solar system{g.contributors !== 1 ? "s" : ""}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </main>
   );
 }

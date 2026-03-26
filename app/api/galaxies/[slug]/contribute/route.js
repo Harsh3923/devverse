@@ -1,0 +1,74 @@
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { getGithubData } from "@/lib/github";
+
+const MAX_SLOTS_PER_ARM = 20; // supports up to 100 contributors (5 arms × 20 slots)
+
+export async function POST(request, { params }) {
+  const { slug } = await params;
+  const body = await request.json();
+  const { github_username } = body;
+
+  if (!github_username?.trim()) {
+    return NextResponse.json({ error: "GitHub username is required" }, { status: 400 });
+  }
+
+  // Resolve galaxy
+  const { data: galaxy, error: galaxyError } = await supabase
+    .from("galaxies")
+    .select("id")
+    .eq("slug", slug)
+    .single();
+
+  if (galaxyError || !galaxy) {
+    return NextResponse.json({ error: "Galaxy not found" }, { status: 404 });
+  }
+
+  // Check for duplicate
+  const { data: existing } = await supabase
+    .from("galaxy_contributors")
+    .select("id")
+    .eq("galaxy_id", galaxy.id)
+    .eq("github_username", github_username.trim().toLowerCase())
+    .single();
+
+  if (existing) {
+    return NextResponse.json({ error: "This GitHub user has already joined this galaxy" }, { status: 409 });
+  }
+
+  // Fetch GitHub data (cached once)
+  const githubData = await getGithubData(github_username.trim());
+  if (!githubData.user || githubData.user.message === "Not Found") {
+    return NextResponse.json({ error: "GitHub user not found" }, { status: 404 });
+  }
+
+  // Count existing contributors to assign arm position
+  const { count } = await supabase
+    .from("galaxy_contributors")
+    .select("id", { count: "exact", head: true })
+    .eq("galaxy_id", galaxy.id);
+
+  const existingCount = count ?? 0;
+  const arm_index = existingCount % 5;
+  const arm_t_slot = Math.floor(existingCount / 5);
+  const arm_t = 0.35 + (arm_t_slot / MAX_SLOTS_PER_ARM) * 0.65;
+
+  // Insert contributor with cached GitHub data
+  const { data: contributor, error: insertError } = await supabase
+    .from("galaxy_contributors")
+    .insert({
+      galaxy_id: galaxy.id,
+      github_username: github_username.trim().toLowerCase(),
+      github_data: githubData,
+      arm_index,
+      arm_t,
+    })
+    .select()
+    .single();
+
+  if (insertError) {
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  }
+
+  return NextResponse.json(contributor, { status: 201 });
+}
