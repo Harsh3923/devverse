@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { supabase } from "@/lib/supabase";
 import { slugify } from "@/lib/slugify";
 
@@ -13,11 +15,22 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const session = await getServerSession(authOptions);
+  if (!session?.githubLogin) {
+    return NextResponse.json({ error: "You must sign in with GitHub to create a galaxy" }, { status: 401 });
+  }
+
   const body = await request.json();
-  const { name, description = "", createdBy = "" } = body;
+  const { name, description = "" } = body;
 
   if (!name?.trim()) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  }
+  if (name.trim().length > 60) {
+    return NextResponse.json({ error: "Name must be 60 characters or fewer" }, { status: 400 });
+  }
+  if (description.length > 200) {
+    return NextResponse.json({ error: "Description must be 200 characters or fewer" }, { status: 400 });
   }
 
   const slug = slugify(name);
@@ -27,7 +40,7 @@ export async function POST(request) {
 
   const { data, error } = await supabase
     .from("galaxies")
-    .insert({ name: name.trim(), slug, description: description.trim(), created_by: createdBy.trim() })
+    .insert({ name: name.trim(), slug, description: description.trim(), created_by: session.githubLogin })
     .select()
     .single();
 
