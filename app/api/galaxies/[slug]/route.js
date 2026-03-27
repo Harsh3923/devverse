@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { supabase } from "@/lib/supabase";
 
 export async function GET(request, { params }) {
@@ -25,4 +27,32 @@ export async function GET(request, { params }) {
   }
 
   return NextResponse.json({ galaxy, contributors: contributors || [] });
+}
+
+export async function DELETE(request, { params }) {
+  const { slug } = await params;
+
+  const session = await getServerSession(authOptions);
+  if (!session?.githubLogin) {
+    return NextResponse.json({ error: "You must be signed in" }, { status: 401 });
+  }
+
+  const { data: galaxy, error: galaxyError } = await supabase
+    .from("galaxies")
+    .select("id, created_by")
+    .eq("slug", slug)
+    .single();
+
+  if (galaxyError || !galaxy) {
+    return NextResponse.json({ error: "Galaxy not found" }, { status: 404 });
+  }
+
+  if (galaxy.created_by.toLowerCase() !== session.githubLogin.toLowerCase()) {
+    return NextResponse.json({ error: "Only the creator can delete this galaxy" }, { status: 403 });
+  }
+
+  await supabase.from("galaxy_contributors").delete().eq("galaxy_id", galaxy.id);
+  await supabase.from("galaxies").delete().eq("id", galaxy.id);
+
+  return NextResponse.json({ success: true });
 }
