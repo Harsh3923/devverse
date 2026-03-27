@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { supabase } from "@/lib/supabase";
 import SharedGalaxyView from "@/components/SharedGalaxyView";
 import CopyLinkButton from "./CopyLinkButton";
+import DeleteGalaxyButton from "./DeleteGalaxyButton";
 
 async function getGalaxyData(slug) {
   const { data: galaxy } = await supabase
@@ -24,10 +27,11 @@ async function getGalaxyData(slug) {
 
 export default async function GalaxySlugPage({ params }) {
   const { slug } = await params;
-  const result = await getGalaxyData(slug);
+  const [result, session] = await Promise.all([getGalaxyData(slug), getServerSession(authOptions)]);
   if (!result) notFound();
 
   const { galaxy, contributors } = result;
+  const isOwner = session?.githubLogin?.toLowerCase() === galaxy.created_by?.toLowerCase();
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-8">
@@ -43,7 +47,7 @@ export default async function GalaxySlugPage({ params }) {
               <p className="mt-2 text-gray-400">{galaxy.description}</p>
             )}
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <CopyLinkButton slug={slug} />
             <Link
               href={`/galaxies/${slug}/contribute`}
@@ -51,6 +55,7 @@ export default async function GalaxySlugPage({ params }) {
             >
               + Add my solar system
             </Link>
+            {isOwner && <DeleteGalaxyButton slug={slug} />}
           </div>
         </div>
 
