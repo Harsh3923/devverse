@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { supabase } from "@/lib/supabase";
 import { getGithubData } from "@/lib/github";
 
@@ -6,11 +8,19 @@ const MAX_SLOTS_PER_ARM = 20; // supports up to 100 contributors (5 arms × 20 s
 
 export async function POST(request, { params }) {
   const { slug } = await params;
+
+  // Verify the user is authenticated via GitHub OAuth
+  const session = await getServerSession(authOptions);
+  if (!session?.githubLogin) {
+    return NextResponse.json({ error: "You must sign in with GitHub to join a galaxy" }, { status: 401 });
+  }
+
   const body = await request.json();
   const { github_username } = body;
 
-  if (!github_username?.trim()) {
-    return NextResponse.json({ error: "GitHub username is required" }, { status: 400 });
+  // Ensure the submitted username matches the authenticated GitHub account
+  if (!github_username?.trim() || github_username.trim().toLowerCase() !== session.githubLogin.toLowerCase()) {
+    return NextResponse.json({ error: "You can only add your own GitHub account" }, { status: 403 });
   }
 
   // Resolve galaxy
