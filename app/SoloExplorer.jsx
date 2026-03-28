@@ -20,11 +20,11 @@ export default function SoloExplorer() {
         placeholder="GitHub username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="flex-1 rounded-xl bg-gray-900 border border-gray-700 px-4 py-3 outline-none focus:border-blue-500 transition-colors"
+        className="clay-input flex-1 px-4 py-3 text-sm"
       />
       <button
         type="submit"
-        className="rounded-xl bg-blue-600 px-5 py-3 font-semibold hover:bg-blue-500 transition-colors"
+        className="clay-btn-primary px-6 py-3 text-sm"
       >
         Explore
       </button>
