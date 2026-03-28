@@ -27,6 +27,18 @@ body {
    CLAY MORPHISM DESIGN SYSTEM
    ============================================ */
 
+/* --- Navbar --- */
+.clay-nav {
+  background: rgba(6, 6, 20, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(99, 102, 241, 0.08);
+}
+
 /* --- Cards --- */
 .clay-card {
   background: linear-gradient(145deg, #141428, #0f0f1e);
@@ -219,4 +231,118 @@ body {
   box-shadow:
     4px 4px 12px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger delays */
+.delay-0  { animation-delay: 0ms; }
+.delay-1  { animation-delay: 80ms; }
+.delay-2  { animation-delay: 160ms; }
+.delay-3  { animation-delay: 240ms; }
+.delay-4  { animation-delay: 320ms; }
+.delay-5  { animation-delay: 400ms; }
+.delay-6  { animation-delay: 480ms; }
+
+/* ============================================
+   LOADING SKELETONS
+   ============================================ */
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.03) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 10px;
+}
+
+.skeleton-card {
+  background: linear-gradient(145deg, #141428, #0f0f1e);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 8px 8px 24px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* ============================================
+   GRADIENT TEXT UTILITY
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, #e2e8f0 0%, #a5b4fc 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   MOBILE POLISH
+   ============================================ */
+
+@media (max-width: 640px) {
+  .clay-card {
+    border-radius: 18px;
+  }
+
+  .clay-btn-primary,
+  .clay-btn-ghost,
+  .clay-btn-danger,
+  .clay-btn-danger-ghost {
+    border-radius: 12px;
+  }
+
+  .clay-input {
+    border-radius: 12px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
 }
