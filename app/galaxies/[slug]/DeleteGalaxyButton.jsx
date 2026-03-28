@@ -24,17 +24,17 @@ export default function DeleteGalaxyButton({ slug }) {
   if (confirming) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-400">Are you sure?</span>
+        <span className="text-sm" style={{ color: "#94a3b8" }}>Are you sure?</span>
         <button
           onClick={handleDelete}
           disabled={loading}
-          className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-500 transition-colors disabled:opacity-50"
+          className="clay-btn-danger px-4 py-2 text-sm"
         >
           {loading ? "Deleting..." : "Yes, delete"}
         </button>
         <button
           onClick={() => setConfirming(false)}
-          className="rounded-xl bg-gray-800 px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition-colors"
+          className="clay-btn-ghost px-4 py-2 text-sm"
         >
           Cancel
         </button>
@@ -45,7 +45,7 @@ export default function DeleteGalaxyButton({ slug }) {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="rounded-xl border border-red-800 px-5 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-950 transition-colors"
+      className="clay-btn-danger-ghost px-5 py-2.5 text-sm"
     >
       Delete Galaxy
     </button>
