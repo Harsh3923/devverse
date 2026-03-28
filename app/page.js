@@ -12,7 +12,6 @@ async function getRecentGalaxies() {
 
     if (!data) return [];
 
-    // Get contributor counts
     const ids = data.map((g) => g.id);
     const { data: contribs } = await supabase
       .from("galaxy_contributors")
@@ -34,25 +33,23 @@ export default async function Home() {
   return (
     <main className="min-h-screen text-white">
       {/* Hero */}
-      <div className="flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center">
-        <h1 className="text-6xl font-bold mb-4" style={{
-          background: "linear-gradient(135deg, #e2e8f0 0%, #a5b4fc 50%, #c084fc 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-        }}>
-          Code Galaxy 🌌
+      <div className="flex flex-col items-center justify-center px-6 pt-16 pb-14 text-center">
+        <h1 className="text-6xl font-bold mb-4 gradient-text animate-fade-in-up delay-0 md:text-7xl">
+          Devverse
         </h1>
-        <p className="max-w-xl text-lg" style={{ color: "#94a3b8" }}>
+        <p
+          className="max-w-xl text-lg animate-fade-in-up delay-1"
+          style={{ color: "#94a3b8" }}
+        >
           Visualize GitHub developers as solar systems — explore solo or build shared galaxies with others.
         </p>
       </div>
 
       {/* Two-card layout */}
-      <div className="mx-auto max-w-5xl px-6 pb-16 grid gap-6 md:grid-cols-2">
+      <div className="mx-auto max-w-5xl px-4 pb-16 grid gap-6 md:grid-cols-2">
 
         {/* Card 1: Solo Explorer */}
-        <div className="clay-card p-8 flex flex-col">
+        <div className="clay-card p-7 flex flex-col animate-fade-in-up delay-2">
           <div className="mb-6">
             <span className="text-4xl">🔭</span>
             <h2 className="mt-3 text-2xl font-bold text-white">Solo Explorer</h2>
@@ -66,7 +63,7 @@ export default async function Home() {
         </div>
 
         {/* Card 2: Shared Galaxies */}
-        <div className="clay-card p-8 flex flex-col">
+        <div className="clay-card p-7 flex flex-col animate-fade-in-up delay-3">
           <div className="mb-6">
             <span className="text-4xl">🌌</span>
             <h2 className="mt-3 text-2xl font-bold text-white">Shared Galaxies</h2>
@@ -93,9 +90,12 @@ export default async function Home() {
 
       {/* Recent Galaxies Strip */}
       {recentGalaxies.length > 0 && (
-        <div className="mx-auto max-w-5xl px-6 pb-20">
+        <div className="mx-auto max-w-5xl px-4 pb-20 animate-fade-in-up delay-4">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#64748b" }}>
+            <h3
+              className="text-xs font-semibold uppercase tracking-widest"
+              style={{ color: "#475569" }}
+            >
               Recent Galaxies
             </h3>
             <Link
@@ -107,11 +107,11 @@ export default async function Home() {
             </Link>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
-            {recentGalaxies.map((g) => (
+            {recentGalaxies.map((g, i) => (
               <Link
                 key={g.id}
                 href={`/galaxies/${g.slug}`}
-                className="clay-card clay-card-hover p-5 block"
+                className={`clay-card clay-card-hover p-5 block animate-scale-in delay-${i}`}
               >
                 <p className="font-semibold truncate text-white">{g.name}</p>
                 <p className="mt-1 text-xs" style={{ color: "#64748b" }}>
