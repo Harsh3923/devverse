@@ -2,6 +2,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SoloExplorer from "./SoloExplorer";
 
+export const dynamic = "force-dynamic";
+
 async function getRecentGalaxies() {
   try {
     const { data } = await supabase
