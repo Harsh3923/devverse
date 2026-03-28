@@ -28,10 +28,10 @@ export default async function GalaxiesPage() {
   const [galaxies, counts] = await Promise.all([getGalaxies(), getContributorCounts()]);
 
   return (
-    <main className="min-h-screen text-white px-6 py-12">
+    <main className="min-h-screen text-white px-4 py-10">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <div className="mb-10 flex items-center justify-between">
+        <div className="mb-10 flex flex-wrap items-start justify-between gap-4 animate-fade-in-up delay-0">
           <div>
             <Link
               href="/"
@@ -40,19 +40,16 @@ export default async function GalaxiesPage() {
             >
               ← Back to home
             </Link>
-            <h1 className="text-4xl font-bold text-white">🌌 Galaxy Explorer</h1>
+            <h1 className="text-4xl font-bold gradient-text">🌌 Galaxy Explorer</h1>
             <p className="mt-2" style={{ color: "#94a3b8" }}>Shared universes built by GitHub developers.</p>
           </div>
-          <Link
-            href="/galaxies/new"
-            className="clay-btn-primary px-5 py-3 text-sm"
-          >
+          <Link href="/galaxies/new" className="clay-btn-primary px-5 py-3 text-sm">
             + Create Galaxy
           </Link>
         </div>
 
         {galaxies.length === 0 ? (
-          <div className="clay-card p-16 text-center">
+          <div className="clay-card p-16 text-center animate-scale-in delay-1">
             <p className="text-5xl mb-4">🌠</p>
             <p className="text-xl font-semibold mb-2" style={{ color: "#cbd5e1" }}>No galaxies yet</p>
             <p className="mb-8" style={{ color: "#64748b" }}>Be the first to create a shared galaxy.</p>
@@ -62,11 +59,11 @@ export default async function GalaxiesPage() {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {galaxies.map((g) => (
+            {galaxies.map((g, i) => (
               <Link
                 key={g.id}
                 href={`/galaxies/${g.slug}`}
-                className="clay-card clay-card-hover p-6 block"
+                className={`clay-card clay-card-hover p-6 block animate-fade-in-up delay-${Math.min(i, 6)}`}
               >
                 <div className="mb-3 flex items-center gap-3">
                   <span className="text-2xl">🌌</span>
