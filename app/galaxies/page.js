@@ -35,10 +35,8 @@ export default async function GalaxiesPage() {
           <div>
             <Link
               href="/"
-              className="mb-3 inline-flex items-center gap-2 text-sm transition-colors"
+              className="mb-3 inline-flex items-center gap-2 text-sm transition-colors hover:text-slate-400"
               style={{ color: "#64748b" }}
-              onMouseEnter={e => e.currentTarget.style.color = "#94a3b8"}
-              onMouseLeave={e => e.currentTarget.style.color = "#64748b"}
             >
               ← Back to home
             </Link>
