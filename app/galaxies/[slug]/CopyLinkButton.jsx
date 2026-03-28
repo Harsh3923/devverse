@@ -14,7 +14,7 @@ export default function CopyLinkButton({ slug }) {
   return (
     <button
       onClick={copy}
-      className="rounded-xl border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-semibold hover:border-gray-500 hover:bg-gray-800 transition-colors"
+      className="clay-btn-ghost px-5 py-2.5 text-sm"
     >
       {copied ? "✓ Copied!" : "🔗 Share link"}
     </button>
