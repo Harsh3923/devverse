@@ -30,52 +30,57 @@ export default async function GalaxiesPage() {
   const [galaxies, counts] = await Promise.all([getGalaxies(), getContributorCounts()]);
 
   return (
-    <main className="min-h-screen text-white px-4 py-10">
+    <main className="min-h-screen text-white px-4 py-8 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <div className="mb-10 flex flex-wrap items-start justify-between gap-4 animate-fade-in-up delay-0">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-0 animate-fade-in-up delay-0">
           <div>
             <Link
               href="/"
-              className="mb-3 inline-flex items-center gap-2 text-sm transition-colors hover:text-slate-400"
+              className="back-link mb-2 inline-flex items-center gap-2 text-sm transition-colors hover:text-slate-400"
               style={{ color: "#64748b" }}
             >
               ← Back to home
             </Link>
-            <h1 className="text-4xl font-bold gradient-text">🌌 Galaxy Explorer</h1>
-            <p className="mt-2" style={{ color: "#94a3b8" }}>Shared universes built by GitHub developers.</p>
+            <h1 className="text-3xl font-bold gradient-text sm:text-4xl">🌌 Galaxy Explorer</h1>
+            <p className="mt-1 text-sm sm:mt-2 sm:text-base" style={{ color: "#94a3b8" }}>
+              Shared universes built by GitHub developers.
+            </p>
           </div>
-          <Link href="/galaxies/new" className="clay-btn-primary px-5 py-3 text-sm">
+          <Link
+            href="/galaxies/new"
+            className="clay-btn-primary px-5 py-3 text-sm w-full text-center sm:w-auto"
+          >
             + Create Galaxy
           </Link>
         </div>
 
         {galaxies.length === 0 ? (
-          <div className="clay-card p-16 text-center animate-scale-in delay-1">
-            <p className="text-5xl mb-4">🌠</p>
-            <p className="text-xl font-semibold mb-2" style={{ color: "#cbd5e1" }}>No galaxies yet</p>
-            <p className="mb-8" style={{ color: "#64748b" }}>Be the first to create a shared galaxy.</p>
+          <div className="clay-card p-10 text-center animate-scale-in delay-1 sm:p-16">
+            <p className="text-4xl mb-4 sm:text-5xl">🌠</p>
+            <p className="text-lg font-semibold mb-2 sm:text-xl" style={{ color: "#cbd5e1" }}>No galaxies yet</p>
+            <p className="mb-6 text-sm sm:mb-8 sm:text-base" style={{ color: "#64748b" }}>Be the first to create a shared galaxy.</p>
             <Link href="/galaxies/new" className="clay-btn-primary px-6 py-3 text-sm inline-block">
               Create the first galaxy
             </Link>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {galaxies.map((g, i) => (
               <Link
                 key={g.id}
                 href={`/galaxies/${g.slug}`}
-                className={`clay-card clay-card-hover p-6 block animate-fade-in-up delay-${Math.min(i, 6)}`}
+                className={`clay-card clay-card-hover p-5 block animate-fade-in-up delay-${Math.min(i, 6)}`}
               >
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="text-2xl">🌌</span>
-                  <h2 className="text-lg font-bold truncate text-white">{g.name}</h2>
+                  <span className="text-xl sm:text-2xl">🌌</span>
+                  <h2 className="text-base font-bold truncate text-white sm:text-lg">{g.name}</h2>
                 </div>
                 {g.description && (
-                  <p className="mb-4 text-sm line-clamp-2" style={{ color: "#94a3b8" }}>{g.description}</p>
+                  <p className="mb-3 text-sm line-clamp-2 sm:mb-4" style={{ color: "#94a3b8" }}>{g.description}</p>
                 )}
-                <div className="flex items-center gap-4 text-sm" style={{ color: "#64748b" }}>
-                  <span>🪐 {counts[g.id] || 0} solar system{counts[g.id] !== 1 ? "s" : ""}</span>
+                <div className="flex items-center gap-3 text-xs sm:gap-4 sm:text-sm" style={{ color: "#64748b" }}>
+                  <span>🪐 {counts[g.id] || 0} system{counts[g.id] !== 1 ? "s" : ""}</span>
                   <span>·</span>
                   <span>{new Date(g.created_at).toLocaleDateString()}</span>
                 </div>
