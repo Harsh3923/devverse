@@ -10,10 +10,10 @@ export default function Navbar() {
 
   return (
     <nav className="clay-nav sticky top-0 z-50">
-      <div className="mx-auto max-w-7xl px-5 py-3.5 flex items-center justify-between">
+      <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between sm:px-5 sm:py-3.5">
 
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold gradient-text tracking-tight">
+        <Link href="/" className="text-lg font-bold gradient-text tracking-tight sm:text-xl" onClick={() => setMenuOpen(false)}>
           Devverse
         </Link>
 
@@ -21,7 +21,7 @@ export default function Navbar() {
         <div className="hidden sm:flex items-center gap-3">
           <Link
             href="/galaxies"
-            className="px-4 py-2 text-sm font-medium rounded-xl transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-xl transition-colors hover:text-white"
             style={{ color: "#94a3b8" }}
           >
             Browse Galaxies
@@ -38,14 +38,12 @@ export default function Navbar() {
                   src={session.user.image}
                   alt={session.githubLogin}
                   className="w-8 h-8 rounded-full"
-                  style={{
-                    boxShadow: "0 0 0 2px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.5)",
-                  }}
+                  style={{ boxShadow: "0 0 0 2px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.5)" }}
                 />
               )}
               <button
                 onClick={() => signOut()}
-                className="text-xs px-3 py-1.5 rounded-lg transition-colors"
+                className="text-xs px-3 py-1.5 rounded-lg transition-colors hover:text-white"
                 style={{ color: "#64748b" }}
               >
                 Sign out
@@ -61,28 +59,29 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile: sign-in avatar or button + hamburger */}
+        {/* Mobile right side */}
         <div className="flex sm:hidden items-center gap-2">
           {session ? (
             <img
               src={session.user?.image}
               alt={session.githubLogin}
-              className="w-7 h-7 rounded-full"
+              className="w-8 h-8 rounded-full"
               style={{ boxShadow: "0 0 0 2px rgba(99,102,241,0.4)" }}
             />
           ) : (
             <button
               onClick={() => signIn("github")}
-              className="clay-btn-ghost px-3 py-1.5 text-xs"
+              className="clay-btn-ghost px-3 py-2 text-xs"
             >
               Sign in
             </button>
           )}
 
-          {/* Hamburger */}
+          {/* Hamburger — 44px tap target */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="clay-btn-ghost p-2 ml-1"
+            className="clay-btn-ghost flex items-center justify-center ml-1"
+            style={{ width: 44, height: 44 }}
             aria-label="Toggle menu"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -106,28 +105,28 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div
-          className="sm:hidden px-5 pb-4 flex flex-col gap-2 animate-fade-in"
+          className="sm:hidden px-4 pb-4 pt-2 flex flex-col gap-2 animate-fade-in"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
           <Link
             href="/galaxies"
             onClick={() => setMenuOpen(false)}
-            className="px-4 py-2.5 text-sm font-medium rounded-xl transition-colors"
+            className="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors hover:text-white"
             style={{ color: "#94a3b8" }}
           >
-            Browse Galaxies
+            🌌 Browse Galaxies
           </Link>
           <Link
             href="/galaxies/new"
             onClick={() => setMenuOpen(false)}
-            className="clay-btn-primary px-4 py-2.5 text-sm text-center"
+            className="clay-btn-primary px-4 py-3 text-sm text-center"
           >
             + Create Galaxy
           </Link>
           {session && (
             <button
               onClick={() => { signOut(); setMenuOpen(false); }}
-              className="clay-btn-ghost px-4 py-2.5 text-sm text-center"
+              className="clay-btn-ghost px-4 py-3 text-sm text-center"
             >
               Sign out
             </button>
