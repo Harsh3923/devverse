@@ -175,8 +175,8 @@ export default function SharedGalaxyScene({ contributors, newIds = new Set() }) 
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-2xl border border-gray-800 bg-black"
-      style={{ height: isFullscreen ? "100vh" : "640px" }}
+      className={`relative w-full rounded-2xl border border-gray-800 bg-black ${isFullscreen ? "" : "scene-height-lg"}`}
+      style={{ height: isFullscreen ? "100vh" : undefined }}
     >
       {/* Overlay */}
       <div style={{ position: "absolute", bottom: "14px", right: "16px", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px" }}>
@@ -197,7 +197,7 @@ export default function SharedGalaxyScene({ contributors, newIds = new Set() }) 
             </svg>
           )}
         </button>
-        <div style={{ display: "flex", gap: "4px", alignItems: "center", pointerEvents: "none", background: "rgba(2,6,23,0.75)", backdropFilter: "blur(8px)", border: "1px solid rgba(56,189,248,0.15)", borderRadius: "10px", padding: "6px 10px", fontSize: "10px", color: "#64748b", letterSpacing: "0.05em" }}>
+        <div className="scene-kb-hint" style={{ gap: "4px", alignItems: "center", pointerEvents: "none", background: "rgba(2,6,23,0.75)", backdropFilter: "blur(8px)", border: "1px solid rgba(56,189,248,0.15)", borderRadius: "10px", padding: "6px 10px", fontSize: "10px", color: "#64748b", letterSpacing: "0.05em" }}>
           <span style={{ color: "#38bdf8" }}>🚀</span>
           <span>W/S ↑↓ — fwd/back · A/← — left · → — right · U/D — up/down · Drag — orbit · Scroll — zoom</span>
         </div>
