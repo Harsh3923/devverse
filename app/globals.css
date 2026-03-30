@@ -326,9 +326,57 @@ body {
 }
 
 /* ============================================
+   3D SCENE — RESPONSIVE HEIGHT
+   ============================================ */
+
+/* Applied to the scene container div when not fullscreen */
+.scene-height {
+  height: 280px;
+}
+
+@media (min-width: 480px) {
+  .scene-height { height: 360px; }
+}
+
+@media (min-width: 640px) {
+  .scene-height { height: 460px; }
+}
+
+@media (min-width: 1024px) {
+  .scene-height { height: 560px; }
+}
+
+/* Shared galaxy scene is slightly taller */
+.scene-height-lg {
+  height: 300px;
+}
+
+@media (min-width: 480px) {
+  .scene-height-lg { height: 390px; }
+}
+
+@media (min-width: 640px) {
+  .scene-height-lg { height: 500px; }
+}
+
+@media (min-width: 1024px) {
+  .scene-height-lg { height: 640px; }
+}
+
+/* Hide keyboard hint on small screens */
+.scene-kb-hint {
+  display: flex;
+}
+
+@media (max-width: 640px) {
+  .scene-kb-hint { display: none; }
+}
+
+/* ============================================
    MOBILE POLISH
    ============================================ */
 
+/* Ensure all interactive elements have a comfortable tap target */
 @media (max-width: 640px) {
   .clay-card {
     border-radius: 18px;
@@ -339,10 +387,31 @@ body {
   .clay-btn-danger,
   .clay-btn-danger-ghost {
     border-radius: 12px;
+    min-height: 44px; /* iOS tap target recommendation */
   }
 
   .clay-input {
     border-radius: 12px;
     font-size: 16px; /* prevents iOS zoom on focus */
+    min-height: 48px;
+  }
+
+  /* Ensure back links have enough tap area */
+  .back-link {
+    padding: 8px 0;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Safe area insets for notched phones (iPhone X+) */
+@supports (padding: max(0px)) {
+  .clay-nav {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+
+  main {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
 }
