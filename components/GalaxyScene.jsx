@@ -249,8 +249,8 @@ export default function GalaxyScene({ repos = [], user = {} }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-2xl border border-gray-800 bg-[radial-gradient(circle_at_center,_#070d1a_0%,_#020617_50%,_#000000_100%)]"
-      style={{ height: isFullscreen ? "100vh" : "560px" }}
+      className={`relative w-full rounded-2xl border border-gray-800 bg-[radial-gradient(circle_at_center,_#070d1a_0%,_#020617_50%,_#000000_100%)] ${isFullscreen ? "" : "scene-height"}`}
+      style={{ height: isFullscreen ? "100vh" : undefined }}
     >
       {/* Bottom-right overlay */}
       <div style={{
@@ -281,8 +281,8 @@ export default function GalaxyScene({ repos = [], user = {} }) {
             </svg>
           )}
         </button>
-        <div style={{
-          display: "flex", gap: "4px", alignItems: "center", pointerEvents: "none",
+        <div className="scene-kb-hint" style={{
+          gap: "4px", alignItems: "center", pointerEvents: "none",
           background: "rgba(2,6,23,0.75)", backdropFilter: "blur(8px)",
           border: "1px solid rgba(56,189,248,0.15)", borderRadius: "10px",
           padding: "6px 10px", fontSize: "10px", color: "#64748b", letterSpacing: "0.05em",
