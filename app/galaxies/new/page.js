@@ -39,19 +39,19 @@ export default function NewGalaxyPage() {
   };
 
   return (
-    <main className="min-h-screen text-white flex flex-col items-center justify-center px-6">
+    <main className="min-h-screen text-white flex flex-col items-center justify-center px-4 py-8 sm:px-6">
       <div className="w-full max-w-md">
         <Link
           href="/galaxies"
-          className="mb-6 inline-flex items-center gap-2 text-sm transition-colors"
+          className="back-link mb-5 inline-flex items-center gap-2 text-sm transition-colors"
           style={{ color: "#64748b" }}
         >
           ← Back to galaxies
         </Link>
 
-        <div className="clay-card p-8">
-          <h1 className="text-3xl font-bold mb-2 text-white">🌌 Create a Galaxy</h1>
-          <p className="mb-8 text-sm" style={{ color: "#94a3b8" }}>
+        <div className="clay-card p-5 sm:p-8">
+          <h1 className="text-2xl font-bold mb-1.5 text-white sm:text-3xl sm:mb-2">🌌 Create a Galaxy</h1>
+          <p className="mb-6 text-sm sm:mb-8" style={{ color: "#94a3b8" }}>
             Give your shared universe a name. Others can join and add their solar system.
           </p>
 
@@ -75,13 +75,13 @@ export default function NewGalaxyPage() {
           )}
 
           {status === "authenticated" && (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
               <div className="clay-badge px-4 py-3 flex items-center gap-3">
                 {session.user?.image && (
-                  <img src={session.user.image} alt={session.githubLogin} className="w-8 h-8 rounded-full" />
+                  <img src={session.user.image} alt={session.githubLogin} className="w-8 h-8 rounded-full flex-shrink-0" />
                 )}
-                <div>
-                  <p className="text-sm font-semibold text-white">{session.githubLogin}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">{session.githubLogin}</p>
                   <p className="text-xs" style={{ color: "#64748b" }}>Signed in with GitHub</p>
                 </div>
               </div>
