@@ -9,7 +9,7 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const hideGalaxyNav = pathname === "/galaxies" || pathname === "/galaxies/new";
+  const hideGalaxyNav = pathname === "/galaxies" || pathname === "/galaxies/new" || pathname.startsWith("/galaxies/");
 
   return (
     <nav className="clay-nav sticky top-0 z-50">
