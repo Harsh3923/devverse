@@ -50,7 +50,10 @@ export default function NewGalaxyPage() {
         </Link>
 
         <div className="clay-card p-5 sm:p-8">
-          <h1 className="text-2xl font-bold mb-1.5 text-white sm:text-3xl sm:mb-2">🌌 Create a Galaxy</h1>
+          <h1 className="flex items-center gap-3 text-2xl font-bold mb-1.5 text-white sm:text-3xl sm:mb-2">
+            <img src="/r&g.png" alt="" className="w-10 h-10 object-contain sm:w-12 sm:h-12" />
+            Create a Galaxy
+          </h1>
           <p className="mb-6 text-sm sm:mb-8" style={{ color: "#94a3b8" }}>
             Give your shared universe a name. Others can join and add their solar system.
           </p>
