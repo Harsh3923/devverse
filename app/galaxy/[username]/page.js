@@ -11,8 +11,9 @@ export default async function GalaxyPage({ params }) {
   return (
     <main className="min-h-screen text-white p-4 sm:p-6 md:p-10">
       <div className="mx-auto max-w-7xl">
-        <h1 className="mb-2 text-2xl font-bold gradient-text animate-fade-in-up delay-0 sm:text-3xl md:text-4xl lg:text-5xl">
-          🌌 {username}&apos;s Galaxy
+        <h1 className="mb-2 flex items-center gap-3 text-2xl font-bold gradient-text animate-fade-in-up delay-0 sm:text-3xl md:text-4xl lg:text-5xl">
+          <img src="/rocky.png" alt="Rocky" className="w-10 h-10 object-contain sm:w-12 sm:h-12 md:w-14 md:h-14" />
+          {username}&apos;s Galaxy
         </h1>
 
         <p className="mb-6 text-sm animate-fade-in-up delay-1 sm:mb-8 sm:text-base" style={{ color: "#94a3b8" }}>
