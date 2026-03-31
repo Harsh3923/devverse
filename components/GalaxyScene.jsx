@@ -280,16 +280,24 @@ export default function GalaxyScene({ repos = [], user = {} }) {
         position: "absolute", bottom: "14px", right: "16px", zIndex: 10,
         display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px",
       }}>
-        {/* Mobile D-pad: Forward/Backward/Up/Down */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 40px)",
-          gridTemplateRows: "repeat(3, 40px)",
-          gap: "3px",
-        }}>
-          <div />{mkBtn("ArrowUp",   "▲", "Forward")}<div />
-          {mkBtn("KeyU", "⬆", "Up (altitude)")}<div />{mkBtn("KeyD", "⬇", "Down (altitude)")}
-          <div />{mkBtn("ArrowDown", "▼", "Backward")}<div />
+        {/* Mobile D-pad: movement + altitude */}
+        <div style={{ display: "flex", gap: "5px", alignItems: "flex-start" }}>
+          {/* Main movement D-pad */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 40px)",
+            gridTemplateRows: "repeat(3, 40px)",
+            gap: "3px",
+          }}>
+            <div />{mkBtn("ArrowUp",    "▲", "Forward")}<div />
+            {mkBtn("ArrowLeft", "◄", "Left")}<div />{mkBtn("ArrowRight", "►", "Right")}
+            <div />{mkBtn("ArrowDown",  "▼", "Backward")}<div />
+          </div>
+          {/* Altitude buttons */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "3px", paddingTop: "43px" }}>
+            {mkBtn("KeyU", "⬆", "Up")}
+            {mkBtn("KeyD", "⬇", "Down")}
+          </div>
         </div>
 
         <button
