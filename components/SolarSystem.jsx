@@ -238,42 +238,42 @@ function Planet({ radius, speed, size, colors, hasRing = false, tilt = 0, repo, 
         <div style={{ fontFamily: "system-ui, -apple-system, sans-serif", width: "220px" }}>
           <div style={{
             borderRadius: "18px", padding: "1px",
-            background: "linear-gradient(135deg, rgba(56,189,248,0.35) 0%, rgba(139,92,246,0.25) 50%, rgba(56,189,248,0.15) 100%)",
-            boxShadow: "0 0 40px rgba(56,189,248,0.12), 0 0 80px rgba(56,189,248,0.06)",
+            background: "linear-gradient(135deg, rgba(34,197,94,0.45) 0%, rgba(185,28,28,0.25) 50%, rgba(34,197,94,0.2) 100%)",
+            boxShadow: "0 0 40px rgba(34,197,94,0.12), 0 0 80px rgba(185,28,28,0.06)",
           }}>
             <div style={{
               borderRadius: "17px",
-              background: "linear-gradient(160deg, rgba(2,8,28,0.97) 0%, rgba(4,12,40,0.96) 100%)",
+              background: "linear-gradient(160deg, rgba(2,8,4,0.97) 0%, rgba(4,12,6,0.96) 100%)",
               backdropFilter: "blur(20px)", padding: "16px", position: "relative", overflow: "hidden",
             }}>
               <div style={{
                 position: "absolute", top: 0, left: "15%", right: "15%", height: "1px",
-                background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.6), transparent)",
+                background: "linear-gradient(90deg, transparent, rgba(34,197,94,0.65), transparent)",
               }} />
               <div style={{ marginBottom: "10px" }}>
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: "5px",
                   padding: "3px 9px", borderRadius: "20px", fontSize: "10px",
                   fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase",
-                  ...(planetType === "gas"  ? { background: "rgba(245,158,11,0.12)", color: "#fcd34d", border: "1px solid rgba(245,158,11,0.25)" } :
-                     planetType === "lava" ? { background: "rgba(239,68,68,0.12)",  color: "#fca5a5", border: "1px solid rgba(239,68,68,0.25)" } :
-                     planetType === "ice"  ? { background: "rgba(56,189,248,0.12)", color: "#7dd3fc", border: "1px solid rgba(56,189,248,0.25)" } :
-                                             { background: "rgba(148,163,184,0.1)", color: "#cbd5e1", border: "1px solid rgba(148,163,184,0.2)" }),
+                  ...(planetType === "gas"  ? { background: "rgba(245,158,11,0.12)", color: "#fcd34d",  border: "1px solid rgba(245,158,11,0.25)" } :
+                     planetType === "lava" ? { background: "rgba(185,28,28,0.15)",  color: "#fca5a5",  border: "1px solid rgba(220,38,38,0.35)" }  :
+                     planetType === "ice"  ? { background: "rgba(34,197,94,0.12)",  color: "#86efac",  border: "1px solid rgba(34,197,94,0.3)" }   :
+                                             { background: "rgba(34,197,94,0.07)",  color: "#a7f3d0",  border: "1px solid rgba(34,197,94,0.18)" }),
                 }}>
                   {planetType === "gas" ? "⚡" : planetType === "lava" ? "🌋" : planetType === "ice" ? "❄️" : "🪨"}
                   {" "}{planetType} planet
                 </span>
               </div>
-              <p style={{ fontSize: "15px", fontWeight: 700, color: "#f1f5f9", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: "10px", letterSpacing: "-0.01em" }}>
+              <p style={{ fontSize: "15px", fontWeight: 700, color: "#ecfdf5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: "10px", letterSpacing: "-0.01em" }}>
                 {repo?.name || "Unknown Repo"}
               </p>
-              <div style={{ height: "1px", margin: "0 0 10px 0", background: "linear-gradient(90deg, transparent, rgba(100,116,139,0.4), transparent)" }} />
+              <div style={{ height: "1px", margin: "0 0 10px 0", background: "linear-gradient(90deg, transparent, rgba(34,197,94,0.35), transparent)" }} />
               <div style={{ display: "flex", gap: "16px", marginBottom: "10px" }}>
-                <span style={{ fontSize: "11px", color: "#94a3b8", display: "flex", alignItems: "center", gap: "4px" }}>
-                  ⭐ <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{repo?.stargazers_count ?? 0}</span>
+                <span style={{ fontSize: "11px", color: "#86efac", display: "flex", alignItems: "center", gap: "4px" }}>
+                  ⭐ <span style={{ color: "#d1fae5", fontWeight: 600 }}>{repo?.stargazers_count ?? 0}</span>
                 </span>
-                <span style={{ fontSize: "11px", color: "#94a3b8", display: "flex", alignItems: "center", gap: "4px" }}>
-                  🍴 <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{repo?.forks_count ?? 0}</span>
+                <span style={{ fontSize: "11px", color: "#86efac", display: "flex", alignItems: "center", gap: "4px" }}>
+                  🍴 <span style={{ color: "#d1fae5", fontWeight: 600 }}>{repo?.forks_count ?? 0}</span>
                 </span>
               </div>
               {repo?.language && (
@@ -283,11 +283,11 @@ function Planet({ radius, speed, size, colors, hasRing = false, tilt = 0, repo, 
                     padding: "4px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 500,
                     ...(repo.language === "JavaScript" ? { background: "rgba(250,204,21,0.1)",  color: "#fde047" } :
                        repo.language === "TypeScript" ? { background: "rgba(129,140,248,0.1)", color: "#a5b4fc" } :
-                       repo.language === "Python"     ? { background: "rgba(56,189,248,0.1)",  color: "#7dd3fc" } :
+                       repo.language === "Python"     ? { background: "rgba(34,197,94,0.1)",   color: "#86efac" } :
                        repo.language === "Java"       ? { background: "rgba(249,115,22,0.1)",  color: "#fdba74" } :
-                       repo.language === "HTML"       ? { background: "rgba(251,113,133,0.1)", color: "#fda4af" } :
-                       repo.language === "CSS"        ? { background: "rgba(34,211,238,0.1)",  color: "#67e8f9" } :
-                                                        { background: "rgba(167,139,250,0.1)", color: "#c4b5fd" }),
+                       repo.language === "HTML"       ? { background: "rgba(185,28,28,0.12)",  color: "#fca5a5" } :
+                       repo.language === "CSS"        ? { background: "rgba(34,197,94,0.1)",   color: "#4ade80" } :
+                                                        { background: "rgba(34,197,94,0.07)",  color: "#a7f3d0" }),
                   }}>
                     <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "currentColor", opacity: 0.85 }} />
                     {repo.language}
@@ -296,13 +296,13 @@ function Planet({ radius, speed, size, colors, hasRing = false, tilt = 0, repo, 
               )}
               <button
                 onClick={(e) => { e.stopPropagation(); if (repo?.html_url) window.open(repo.html_url, "_blank", "noopener,noreferrer"); }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "linear-gradient(135deg, #0891b2 0%, #2563eb 100%)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(56,189,248,0.4), 0 4px 12px rgba(0,0,0,0.4)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "linear-gradient(135deg, #0e7490 0%, #1d4ed8 100%)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(56,189,248,0.2), 0 2px 8px rgba(0,0,0,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "linear-gradient(135deg, #16a34a 0%, #15803d 100%)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.45), 0 4px 12px rgba(0,0,0,0.4)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "linear-gradient(135deg, #166534 0%, #14532d 100%)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(34,197,94,0.2), 0 2px 8px rgba(0,0,0,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
                 style={{
                   width: "100%", cursor: "pointer", border: "none", borderRadius: "12px",
                   padding: "9px 0", fontSize: "12px", fontWeight: 700, color: "#fff", letterSpacing: "0.02em",
-                  background: "linear-gradient(135deg, #0e7490 0%, #1d4ed8 100%)",
-                  boxShadow: "0 0 12px rgba(56,189,248,0.2), 0 2px 8px rgba(0,0,0,0.3)",
+                  background: "linear-gradient(135deg, #166534 0%, #14532d 100%)",
+                  boxShadow: "0 0 12px rgba(34,197,94,0.2), 0 2px 8px rgba(0,0,0,0.3)",
                   transition: "all 0.18s ease", display: "flex", alignItems: "center", justifyContent: "center", gap: "7px",
                 }}>
                 🚀 Travel to Repository
