@@ -103,7 +103,7 @@ function Comet() {
 
 // ─── Spaceship + Camera Rig ────────────────────────────────────────────────────
 
-function SpaceshipRig({ controlsRef }) {
+function SpaceshipRig({ controlsRef, mobileKeys }) {
   const { camera } = useThree();
   const keys    = useRef({});
   const velX    = useRef(0);
@@ -128,7 +128,7 @@ function SpaceshipRig({ controlsRef }) {
   useFrame((_, delta) => {
     const SPEED   = 8;
     const DAMPING = 0.88;
-    const k = keys.current;
+    const k = { ...keys.current, ...(mobileKeys?.current || {}) };
 
     const move = new THREE.Vector3();
     if (k["ArrowUp"]   || k["KeyW"]) move.z -= 1;
@@ -231,6 +231,29 @@ export default function GalaxyScene({ repos = [], user = {} }) {
   const [isFullscreen, setIsFullscreen]  = useState(false);
   const controlsRef  = useRef();
   const containerRef = useRef();
+  const mobileKeys   = useRef({});
+
+  const mkBtn = (code, children, title) => (
+    <button
+      key={code}
+      title={title}
+      onPointerDown={e => { e.preventDefault(); mobileKeys.current[code] = true; }}
+      onPointerUp={() => { mobileKeys.current[code] = false; }}
+      onPointerLeave={() => { mobileKeys.current[code] = false; }}
+      onPointerCancel={() => { mobileKeys.current[code] = false; }}
+      style={{
+        width: 40, height: 40, borderRadius: 10, cursor: "pointer",
+        background: "rgba(2,8,4,0.85)", backdropFilter: "blur(8px)",
+        border: "1px solid rgba(34,197,94,0.28)",
+        color: "#4ade80", fontSize: 16, display: "flex",
+        alignItems: "center", justifyContent: "center",
+        userSelect: "none", WebkitUserSelect: "none", touchAction: "none",
+        boxShadow: "0 0 8px rgba(34,197,94,0.08)",
+      }}
+    >
+      {children}
+    </button>
+  );
 
   useEffect(() => {
     const handler = () => setIsFullscreen(!!document.fullscreenElement);
@@ -257,6 +280,18 @@ export default function GalaxyScene({ repos = [], user = {} }) {
         position: "absolute", bottom: "14px", right: "16px", zIndex: 10,
         display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px",
       }}>
+        {/* Mobile D-pad: Forward/Backward/Up/Down */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 40px)",
+          gridTemplateRows: "repeat(3, 40px)",
+          gap: "3px",
+        }}>
+          <div />{mkBtn("ArrowUp",   "▲", "Forward")}<div />
+          {mkBtn("KeyU", "⬆", "Up (altitude)")}<div />{mkBtn("KeyD", "⬇", "Down (altitude)")}
+          <div />{mkBtn("ArrowDown", "▼", "Backward")}<div />
+        </div>
+
         <button
           onClick={toggleFullscreen}
           title={isFullscreen ? "Exit fullscreen (Esc)" : "Enter fullscreen"}
@@ -318,7 +353,7 @@ export default function GalaxyScene({ repos = [], user = {} }) {
         />
 
         <Comet />
-        <SpaceshipRig controlsRef={controlsRef} />
+        <SpaceshipRig controlsRef={controlsRef} mobileKeys={mobileKeys} />
 
         <OrbitControls
           ref={controlsRef}
