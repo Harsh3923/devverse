@@ -53,7 +53,7 @@ export default async function Home() {
         {/* Card 1: Solo Explorer */}
         <div className="clay-card p-5 flex flex-col animate-fade-in-up delay-2 sm:p-7">
           <div className="mb-5">
-            <span className="text-3xl sm:text-4xl">🔭</span>
+            <img src="/rocky.png" alt="Rocky" className="w-16 h-16 object-contain sm:w-20 sm:h-20" />
             <h2 className="mt-3 text-xl font-bold text-white sm:text-2xl">Solo Explorer</h2>
             <p className="mt-2 text-sm" style={{ color: "#94a3b8" }}>
               Enter any GitHub username to visualize their repositories as a private solar system.
