@@ -42,7 +42,10 @@ export default async function GalaxiesPage() {
             >
               ← Back to home
             </Link>
-            <h1 className="text-3xl font-bold gradient-text sm:text-4xl">🌌 Galaxy Explorer</h1>
+            <h1 className="flex items-center gap-3 text-3xl font-bold gradient-text sm:text-4xl">
+              <img src="/crimson-space.png" alt="" className="w-10 h-10 object-cover rounded-lg sm:w-12 sm:h-12" />
+              Galaxy Explorer
+            </h1>
             <p className="mt-1 text-sm sm:mt-2 sm:text-base" style={{ color: "#94a3b8" }}>
               Shared universes built by GitHub developers.
             </p>
