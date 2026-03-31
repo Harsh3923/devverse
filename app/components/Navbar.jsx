@@ -3,10 +3,13 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const hideGalaxyNav = pathname === "/galaxies" || pathname === "/galaxies/new";
 
   return (
     <nav className="clay-nav sticky top-0 z-50">
@@ -19,17 +22,20 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden sm:flex items-center gap-3">
-          <Link
-            href="/galaxies"
-            className="px-4 py-2 text-sm font-medium rounded-xl transition-colors hover:text-white"
-            style={{ color: "#94a3b8" }}
-          >
-            Browse Galaxies
-          </Link>
-
-          <Link href="/galaxies/new" className="clay-btn-primary px-4 py-2 text-sm">
-            + Create Galaxy
-          </Link>
+          {!hideGalaxyNav && (
+            <>
+              <Link
+                href="/galaxies"
+                className="px-4 py-2 text-sm font-medium rounded-xl transition-colors hover:text-white"
+                style={{ color: "#94a3b8" }}
+              >
+                Browse Galaxies
+              </Link>
+              <Link href="/galaxies/new" className="clay-btn-primary px-4 py-2 text-sm">
+                + Create Galaxy
+              </Link>
+            </>
+          )}
 
           {session ? (
             <div className="flex items-center gap-2.5 ml-1">
@@ -108,21 +114,25 @@ export default function Navbar() {
           className="sm:hidden px-4 pb-4 pt-2 flex flex-col gap-2 animate-fade-in"
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
-          <Link
-            href="/galaxies"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors hover:text-white"
-            style={{ color: "#94a3b8" }}
-          >
-            🌌 Browse Galaxies
-          </Link>
-          <Link
-            href="/galaxies/new"
-            onClick={() => setMenuOpen(false)}
-            className="clay-btn-primary px-4 py-3 text-sm text-center"
-          >
-            + Create Galaxy
-          </Link>
+          {!hideGalaxyNav && (
+            <>
+              <Link
+                href="/galaxies"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors hover:text-white"
+                style={{ color: "#94a3b8" }}
+              >
+                🌌 Browse Galaxies
+              </Link>
+              <Link
+                href="/galaxies/new"
+                onClick={() => setMenuOpen(false)}
+                className="clay-btn-primary px-4 py-3 text-sm text-center"
+              >
+                + Create Galaxy
+              </Link>
+            </>
+          )}
           {session && (
             <button
               onClick={() => { signOut(); setMenuOpen(false); }}
