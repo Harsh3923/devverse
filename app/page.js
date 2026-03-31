@@ -67,7 +67,7 @@ export default async function Home() {
         {/* Card 2: Shared Galaxies */}
         <div className="clay-card p-5 flex flex-col animate-fade-in-up delay-3 sm:p-7">
           <div className="mb-5">
-            <span className="text-3xl sm:text-4xl">🌌</span>
+            <img src="/crimson-space.png" alt="Shared Galaxy" className="w-16 h-16 object-cover rounded-xl sm:w-20 sm:h-20" />
             <h2 className="mt-3 text-xl font-bold text-white sm:text-2xl">Shared Galaxies</h2>
             <p className="mt-2 text-sm" style={{ color: "#94a3b8" }}>
               Create a named galaxy, invite developers to add their solar systems, and explore together in real-time.
