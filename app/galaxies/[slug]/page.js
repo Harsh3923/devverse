@@ -10,6 +10,7 @@ import CopyLinkButton from "./CopyLinkButton";
 import DeleteGalaxyButton from "./DeleteGalaxyButton";
 import EditGalaxyButton from "./EditGalaxyButton";
 import LeaveGalaxyButton from "./LeaveGalaxyButton";
+import RefreshGalaxyButton from "./RefreshGalaxyButton";
 
 async function getGalaxyData(slug) {
   const { data: galaxy } = await supabase
@@ -57,6 +58,7 @@ export default async function GalaxySlugPage({ params }) {
         <div className="mb-4 sm:mb-6">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">🌌 {galaxy.name}</h1>
+            <RefreshGalaxyButton slug={slug} />
             {isOwner && (
               <EditGalaxyButton
                 slug={slug}
