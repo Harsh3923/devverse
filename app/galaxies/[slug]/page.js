@@ -73,12 +73,14 @@ export default async function GalaxySlugPage({ params }) {
         {/* Action buttons — full width on mobile, row on sm+ */}
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
           <CopyLinkButton slug={slug} />
-          <Link
-            href={`/galaxies/${slug}/contribute`}
-            className="clay-btn-primary px-5 py-2.5 text-sm text-center"
-          >
-            + Add my solar system
-          </Link>
+          {!isContributor && (
+            <Link
+              href={`/galaxies/${slug}/contribute`}
+              className="clay-btn-primary px-5 py-2.5 text-sm text-center"
+            >
+              + Add my solar system
+            </Link>
+          )}
           {isContributor && <LeaveGalaxyButton slug={slug} />}
           {isOwner && <DeleteGalaxyButton slug={slug} />}
         </div>
