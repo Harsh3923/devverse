@@ -9,6 +9,10 @@ export default function SharedGalaxyView({ initialContributors, galaxyId }) {
   const newIds = useRef(new Set());
 
   useEffect(() => {
+    setContributors(initialContributors);
+  }, [initialContributors]);
+
+  useEffect(() => {
     const channel = supabase
       .channel(`galaxy-${galaxyId}`)
       .on(
