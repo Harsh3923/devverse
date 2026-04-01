@@ -8,6 +8,8 @@ import { supabase } from "@/lib/supabase";
 import SharedGalaxyView from "@/components/SharedGalaxyView";
 import CopyLinkButton from "./CopyLinkButton";
 import DeleteGalaxyButton from "./DeleteGalaxyButton";
+import EditGalaxyButton from "./EditGalaxyButton";
+import LeaveGalaxyButton from "./LeaveGalaxyButton";
 
 async function getGalaxyData(slug) {
   const { data: galaxy } = await supabase
@@ -34,6 +36,9 @@ export default async function GalaxySlugPage({ params }) {
 
   const { galaxy, contributors } = result;
   const isOwner = session?.githubLogin?.toLowerCase() === galaxy.created_by?.toLowerCase();
+  const isContributor = contributors.some(
+    c => c.github_username.toLowerCase() === (session?.githubLogin?.toLowerCase() ?? "")
+  );
 
   return (
     <main className="min-h-screen text-white px-4 py-6 sm:px-6 sm:py-8">
@@ -50,7 +55,16 @@ export default async function GalaxySlugPage({ params }) {
 
         {/* Title row */}
         <div className="mb-4 sm:mb-6">
-          <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">🌌 {galaxy.name}</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">🌌 {galaxy.name}</h1>
+            {isOwner && (
+              <EditGalaxyButton
+                slug={slug}
+                initialName={galaxy.name}
+                initialDescription={galaxy.description || ""}
+              />
+            )}
+          </div>
           {galaxy.description && (
             <p className="mt-1 text-sm sm:mt-2 sm:text-base" style={{ color: "#94a3b8" }}>{galaxy.description}</p>
           )}
@@ -65,6 +79,7 @@ export default async function GalaxySlugPage({ params }) {
           >
             + Add my solar system
           </Link>
+          {isContributor && <LeaveGalaxyButton slug={slug} />}
           {isOwner && <DeleteGalaxyButton slug={slug} />}
         </div>
 
