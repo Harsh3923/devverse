@@ -51,14 +51,12 @@ function SidebarGalaxyItem({ g }) {
   return (
     <Link
       href={`/galaxies/${g.slug}`}
-      className="flex items-center gap-2 rounded-xl px-3 py-2.5 transition-all"
+      className="clay-card-hover flex items-center gap-2 rounded-xl px-3 py-2.5 transition-all"
       style={{
         background: "rgba(34,197,94,0.04)",
         border: "1px solid rgba(34,197,94,0.08)",
         color: "#d1fae5",
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = "rgba(34,197,94,0.09)"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.2)"; }}
-      onMouseLeave={e => { e.currentTarget.style.background = "rgba(34,197,94,0.04)"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.08)"; }}
     >
       <span className="text-sm">🌌</span>
       <span className="truncate text-xs font-medium">{g.name}</span>
