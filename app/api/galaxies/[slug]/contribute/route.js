@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { getGithubData } from "@/lib/github";
 
 const MAX_SLOTS_PER_ARM = 20; // supports up to 100 contributors (5 arms × 20 slots)
@@ -81,4 +82,35 @@ export async function POST(request, { params }) {
   }
 
   return NextResponse.json(contributor, { status: 201 });
+}
+
+export async function DELETE(_request, { params }) {
+  const { slug } = await params;
+
+  const session = await getServerSession(authOptions);
+  if (!session?.githubLogin) {
+    return NextResponse.json({ error: "You must be signed in" }, { status: 401 });
+  }
+
+  const { data: galaxy, error: galaxyError } = await supabase
+    .from("galaxies")
+    .select("id")
+    .eq("slug", slug)
+    .single();
+
+  if (galaxyError || !galaxy) {
+    return NextResponse.json({ error: "Galaxy not found" }, { status: 404 });
+  }
+
+  const { error: deleteError } = await supabaseAdmin
+    .from("galaxy_contributors")
+    .delete()
+    .eq("galaxy_id", galaxy.id)
+    .eq("github_username", session.githubLogin.toLowerCase());
+
+  if (deleteError) {
+    return NextResponse.json({ error: deleteError.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
 }
