@@ -18,10 +18,13 @@ Devverse turns GitHub profiles into interactive 3D solar systems. Every develope
 - **Shared Galaxies** — Create a named galaxy and invite other GitHub developers to add their solar systems
 - **GitHub OAuth Authentication** — Sign in with GitHub to verify your identity before creating or joining a galaxy
 - **Real-time Updates** — New solar systems appear in the galaxy the moment a contributor joins, no refresh needed
-- **Spaceship Navigation** — Fly through the galaxy using keyboard controls (WASD / arrow keys)
+- **Spaceship Navigation** — Fly through the galaxy using keyboard controls (WASD / arrow keys) or on-screen D-pad buttons (mobile-friendly)
 - **Planet Details** — Click any planet to see repo name, language, stars, forks, and a direct GitHub link
-- **Owner-only Controls** — Only the creator of a galaxy can delete it
+- **Owner-only Controls** — Galaxy creator can edit the name/description inline, and delete the galaxy
+- **Leave a Galaxy** — Contributors can remove their solar system from a shared galaxy at any time
 - **Shareable Links** — Copy and share a galaxy link with anyone
+- **GitHub Data Sync** — One-click refresh syncs the latest GitHub repo data for all contributors in a galaxy
+- **Smart Browse Page** — The galaxy browser splits into a 70/30 layout: all galaxies on the left, and a personal sidebar (galaxies you created + galaxies you joined) on the right
 
 ---
 
@@ -128,6 +131,8 @@ A detailed miniature spaceship (fuselage, nose cone, wings, engine pods, nav lig
 | Mouse drag | Orbit camera |
 | Scroll wheel | Zoom in/out |
 
+On mobile (or any touch device) an on-screen **D-pad overlay** is rendered in the bottom-right corner of the scene — a 3×3 cross for forward/back/left/right and a side column for altitude up/down. Buttons use pointer events so they work with both touch and mouse. The D-pad is present in both the solo explorer and shared galaxy scenes.
+
 The ship banks (tilts) left/right based on horizontal velocity, simulated with lerp smoothing.
 
 #### Interacting with Planets
@@ -149,7 +154,7 @@ The ship banks (tilts) left/right based on horizontal velocity, simulated with l
 
 #### Joining a Galaxy (Contributing a Solar System)
 
-1. A contributor visits the galaxy page and clicks **"+ Add my solar system"**
+1. A contributor visits the galaxy page and clicks **"+ Add my solar system"** (hidden if they are already a contributor)
 2. They are sent to `/galaxies/{slug}/contribute` and prompted to sign in with GitHub if not already
 3. On submit, `POST /api/galaxies/{slug}/contribute` is called
 4. The server:
@@ -159,6 +164,18 @@ The ship banks (tilts) left/right based on horizontal velocity, simulated with l
    - Fetches their GitHub profile + repos
    - Calculates their **arm position** in the galaxy (see below)
    - Stores everything in `galaxy_contributors`
+
+#### Leaving a Galaxy
+
+A contributor can click **🚪 Leave Galaxy** on the galaxy detail page. The button uses a two-step confirmation before calling `DELETE /api/galaxies/{slug}/contribute`, which removes only their row from `galaxy_contributors`. After leaving, they are redirected to the browse page.
+
+#### Editing Galaxy Info (Owner Only)
+
+The galaxy creator sees a **✏️ Edit** button inline next to the galaxy name. Clicking it expands a clay form to update the name (max 60 chars) and description (max 200 chars). On save, `PATCH /api/galaxies/{slug}` updates the record without changing the URL slug, so existing shared links remain valid.
+
+#### Refreshing GitHub Data
+
+GitHub data is cached at join time. To sync the latest repo counts and profile info for all contributors, the galaxy creator (or any visitor) can click the **🔄** icon next to the galaxy name. This calls `POST /api/galaxies/{slug}/refresh`, which re-fetches GitHub data for every contributor in parallel and updates the database. The 3D scene updates immediately after.
 
 #### Galaxy Arm Positioning
 
@@ -281,6 +298,8 @@ Writes (insert, delete) use the **admin client** on the server. This is necessar
 | Unauthenticated galaxy creation | `POST /api/galaxies` returns 401 if no valid session |
 | Adding someone else's GitHub account | API validates `github_username === session.githubLogin` (403 if mismatch) |
 | Deleting another user's galaxy | DELETE checks `galaxy.created_by === session.githubLogin` (403 if not owner) |
+| Editing another user's galaxy | PATCH checks `galaxy.created_by === session.githubLogin` (403 if not owner) |
+| Leaving a galaxy you didn't join | DELETE on contribute route deletes only the row matching `session.githubLogin` |
 | Old galaxies with no creator | Null `created_by` handled — delete blocked for safety |
 | XSS / clickjacking | Security headers set in `next.config.mjs`: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` |
 | Input length abuse | Server-side validation: name ≤ 60 chars, description ≤ 200 chars |
@@ -373,8 +392,9 @@ devverse/
 │   │   ├── auth/[...nextauth]/     # GitHub OAuth handler (NextAuth)
 │   │   ├── galaxies/               # GET all galaxies, POST create galaxy
 │   │   │   └── [slug]/
-│   │   │       ├── contribute/     # POST add solar system to galaxy
-│   │   │       └── route.js        # DELETE galaxy (owner only)
+│   │   │       ├── contribute/     # POST join galaxy, DELETE leave galaxy
+│   │   │       ├── refresh/        # POST re-fetch GitHub data for all contributors
+│   │   │       └── route.js        # GET galaxy, PATCH edit name/desc, DELETE galaxy
 │   │   └── github/[username]/      # GitHub data proxy route
 │   ├── components/
 │   │   └── Navbar.jsx              # Sticky clay morphism navbar
@@ -383,6 +403,9 @@ devverse/
 │   │   │   ├── contribute/         # Add your solar system (auth required)
 │   │   │   ├── CopyLinkButton.jsx  # Share link button
 │   │   │   ├── DeleteGalaxyButton.jsx  # Owner-only delete
+│   │   │   ├── EditGalaxyButton.jsx    # Owner-only inline name/description edit
+│   │   │   ├── LeaveGalaxyButton.jsx   # Contributor leave with confirm step
+│   │   │   ├── RefreshGalaxyButton.jsx # Sync GitHub data for all contributors
 │   │   │   └── page.js             # Galaxy detail view
 │   │   ├── new/page.js             # Create galaxy (auth required)
 │   │   ├── loading.js              # Shimmer skeleton while loading
